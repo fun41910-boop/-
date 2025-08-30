@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naruto Ads Earn</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src='//libtl.com/sdk.js' data-zone='9797292' data-sdk='show_9797292'></script>
+    <style>
+        :root {
+            --primary: #FF9500;
+            --secondary: #1C1C1E;
+            --accent: #007AFF;
+            --background: #000000;
+            --card-bg: #1C1C1E;
+            --text: #FFFFFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            padding: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #333;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #aaa;
+            font-size: 16px;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: black;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            transition: all 0.3s;
+        }
+        
+        .btn:disabled {
+            background-color: #555;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .btn:hover:not(:disabled) {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .balance {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
+            color: var(--primary);
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-around;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-top: 1px solid #333;
+        }
+        
+        .nav-item {
+            text-align: center;
+            color: #aaa;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .section {
+            display: none;
+            margin-bottom: 70px;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .task-info {
+            flex: 1;
+        }
+        
+        .task-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .task-desc {
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .withdraw-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .withdraw-option {
+            background-color: #2C2C2E;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .withdraw-option:hover {
+            background-color: #3A3A3C;
+            transform: translateY(-2px);
+        }
+        
+        .withdraw-option.selected {
+            border: 2px solid var(--primary);
+        }
+        
+        .admin-panel {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .admin-stat {
+            background-color: #3A3A3C;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .user-list {
+            margin-top: 20px;
+        }
+        
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #2C2C2E;
+            color: white;
+        }
+        
+        .admin-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+        
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-card h3 { margin: 0 0 10px 0; font-size: 14px; }
+        .stat-card p { margin: 0; font-size: 20px; color: #FF9500; }
+        
+        .activity-list, .user-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .activity-item, .user-item {
+            padding: 10px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="loading" id="loading">
+            <div class="loader"></div>
+        </div>
+        
+        <div id="appContent" class="hidden">
+            <button class="admin-toggle" id="adminToggle">Admin</button>
+            
+            <!-- Admin Login Section -->
+            <div class="admin-login hidden" id="adminLogin">
+                <div class="card">
+                    <h2 class="card-title">Admin Login</h2>
+                    <div class="form-group">
+                        <input type="password" id="adminPassword" placeholder="Admin Password">
+                    </div>
+                    <button class="btn" id="loginBtn">Login</button>
+                </div>
+            </div>
+
+            <!-- Main App -->
+            <div id="mainApp">
+                <header>
+                    <h1>NARUTO ADS EARN</h1>
+                    <p class="subtitle">Earn Crypto Watching Ads!</p>
+                </header>
+                
+                <!-- Home Section -->
+                <div class="section active" id="homeSection">
+                    <div class="card">
+                        <h2 class="card-title">Today's Tasks</h2>
+                        <div class="stats">
+                            <div class="stat-item">
+                                <div class="stat-value" id="totalTasks">50</div>
+                                <div class="stat-label">Total Tasks</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="completedTasks">0</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="remainingTasks">50</div>
+                                <div class="stat-label">Remaining</div>
+                            </div>
+                        </div>
+                        <button class="btn" id="watchAdBtn">Click on Ad</button>
+                    </div>
+                    
+                    <div class="balance">
+                        Your Balance: <span id="userBalance">BTTC 0.00</span>
+                    </div>
+                    
+                    <div class="card">
+                        <h2 class="card-title">Refer & Earn</h2>
+                        <p>Invite your friends and earn 1000.00 BTTC for each referral!</p>
+                        <button class="btn" id="referBtn">Copy Referral Link</button>
+                    </div>
+                    
+                    <!-- Admin Panel (hidden by default) -->
+                    <div class="admin-panel hidden" id="adminPanel">
+                        <h2 class="card-title">Admin Dashboard</h2>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h3>Total Users</h3>
+                                <p id="totalUsers">0</p>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Total Earnings</h3>
+                                <p id="totalEarnings">0 BTTC</p>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Ads Today</h3>
+                                <p id="adsToday">0</p>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Withdrawals</h3>
+                                <p id="totalWithdrawals">0</p>
+                            </div>
+                        </div>
+                        
+                        <h3>Recent Activity</h3>
+                        <div class="activity-list" id="activityList">
+                            <!-- Activity will be loaded here -->
+                        </div>
+                        
+                        <h3>User Management</h3>
+                        <div class="user-list" id="userList">
+                            <!-- Users will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Earn Section -->
+                <div class="section" id="earnSection">
+                    <div class="card">
+                        <h2 class="card-title">Watch & Earn</h2>
+                        <p>Watch short ads and earn BTTC tokens. For every 10 ads you watch, you earn 1 BTTC.</p>
+                        
+                        <div id="adContainer">
+                            <!-- Monetag ads will be displayed here -->
+                        </div>
+                        
+                        <div class="stats">
+                            <div class="stat-item">
+                                <div class="stat-value" id="adsWatched">0</div>
+                                <div class="stat-label">Ads Watched</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="adsToNextCoin">10</div>
+                                <div class="stat-label">To Next Coin</div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn" id="startAdBtn">Start Watching Ads</button>
+                    </div>
+                </div>
+                
+                <!-- Task Section -->
+                <div class="section" id="taskSection">
+                    <div class="card">
+                        <h2 class="card-title">Daily Tasks</h2>
+                        
+                        <div class="task-item">
+                            <div class="task-info">
+                                <div class="task-title">Watch 10 Ads</div>
+                                <div class="task-desc">Earn 1 BTTC for completing this task</div>
+                            </div>
+                            <button class="btn" data-task="watch10">Start</button>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-info">
+                                <div class="task-title">Watch 20 Ads</div>
+                                <div class="task-desc">Earn 2 BTTC for completing this task</div>
+                            </div>
+                            <button class="btn" data-task="watch20">Start</button>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-info">
+                                <div class="task-title">Refer a Friend</div>
+                                <div class="task-desc">Earn 1000.00 BTTC for each referral</div>
+                            </div>
+                            <button class="btn" data-task="refer">Invite</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Withdraw Section -->
+                <div class="section" id="withdrawSection">
+                    <div class="card">
+                        <h2 class="card-title">Withdraw Earnings</h2>
+                        
+                        <div class="balance">
+                            Available: <span id="withdrawBalance">BTTC 0.00</span>
+                        </div>
+                        
+                        <div class="withdraw-options">
+                            <div class="withdraw-option" data-amount="10">
+                                <h3>10 BTTC</h3>
+                                <p>Minimum withdrawal</p>
+                            </div>
+                            <div class="withdraw-option" data-amount="20">
+                                <h3>20 BTTC</h3>
+                                <p>Instant processing</p>
+                            </div>
+                            <div class="withdraw-option" data-amount="50">
+                                <h3>50 BTTC</h3>
+                                <p>Popular choice</p>
+                            </div>
+                            <div class="withdraw-option" data-amount="100">
+                                <h3>100 BTTC</h3>
+                                <p>Maximum bonus</p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="walletAddress">BTTC Wallet Address</label>
+                            <input type="text" id="walletAddress" placeholder="Enter your BTTC wallet address">
+                        </div>
+                        
+                        <button class="btn" id="requestWithdrawBtn" disabled>Request Withdrawal</button>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <div class="nav">
+                    <div class="nav-item active" data-target="homeSection">Home</div>
+                    <div class="nav-item" data-target="earnSection">Earn</div>
+                    <div class="nav-item" data-target="taskSection">Task</div>
+                    <div class="nav-item" data-target="withdrawSection">Withdraw</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Telegram Web App initialization
+        let tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide loading screen and show app content
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('appContent').classList.remove('hidden');
+            
+            // User data
+            let userData = {
+                userId: tg?.initDataUnsafe?.user?.id || Math.floor(Math.random() * 1000000),
+                balance: 0,
+                tasksCompleted: 0,
+                adsWatched: 0,
+                tasksRemaining: 50,
+                lastTaskDate: null
+            };
+            
+            // Try to load user data from local storage
+            try {
+                const savedData = localStorage.getItem('naruto_user_' + userData.userId);
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    // Check if it's the same day
+                    const today = new Date().toDateString();
+                    if (parsedData.lastTaskDate === today) {
+                        userData = parsedData;
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading user data:', e);
+            }
+            
+            // Admin data
+            const ADMIN_PASSWORD = "admin123"; // Change this in production
+            
+            // Check if we need to reset daily tasks
+            const today = new Date().toDateString();
+            if (userData.lastTaskDate !== today) {
+                userData.tasksRemaining = 50;
+                userData.lastTaskDate = today;
+                // Save to localStorage
+                localStorage.setItem('naruto_user_' + userData.userId, JSON.stringify(userData));
+            }
+            
+            // DOM elements
+            const totalTasksEl = document.getElementById('totalTasks');
+            const completedTasksEl = document.getElementById('completedTasks');
+            const remainingTasksEl = document.getElementById('remainingTasks');
+            const userBalanceEl = document.getElementById('userBalance');
+            const withdrawBalanceEl = document.getElementById('withdrawBalance');
+            const adsWatchedEl = document.getElementById('adsWatched');
+            const adsToNextCoinEl = document.getElementById('adsToNextCoin');
+            const watchAdBtn = document.getElementById('watchAdBtn');
+            const startAdBtn = document.getElementById('startAdBtn');
+            const referBtn = document.getElementById('referBtn');
+            const requestWithdrawBtn = document.getElementById('requestWithdrawBtn');
+            const walletAddressEl = document.getElementById('walletAddress');
+            const adminToggle = document.getElementById('adminToggle');
+            const adminPanel = document.getElementById('adminPanel');
+            const adminLogin = document.getElementById('adminLogin');
+            const loginBtn = document.getElementById('loginBtn');
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.section');
+            
+            // Initialize UI
+            updateUI();
+            
+            // Navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    
+                    // Update active nav item
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target section
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === target) {
+                            section.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Watch ad button
+            watchAdBtn.addEventListener('click', function() {
+                // Switch to earn section
+                navItems.forEach(nav => nav.classList.remove('active'));
+                document.querySelector('[data-target="earnSection"]').classList.add('active');
+                
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === 'earnSection') {
+                        section.classList.add('active');
+                    }
+                });
+            });
+            
+            // Start watching ads
+            startAdBtn.addEventListener('click', function() {
+                if (userData.tasksRemaining <= 0) {
+                    alert('You have completed all tasks for today. Come back tomorrow!');
+                    return;
+                }
+                
+                // Simulate ad watching
+                simulateAdWatch();
+            });
+            
+            // Referral button
+            referBtn.addEventListener('click', function() {
+                const botUsername = tg?.initDataUnsafe?.user?.username ? 
+                    `@${tg.initDataUnsafe.user.username}` : 'Naruto_Ads_Earn_V2_Bot';
+                const referralLink = `https://t.me/${botUsername}?start=ref${userData.userId}`;
+                
+                // Use Telegram's built-in share functionality if available
+                if (tg?.showPopup) {
+                    tg.showPopup({
+                        title: "Refer & Earn",
+                        message: `Share your referral link: ${referralLink}`,
+                        buttons: [{ type: "ok" }]
+                    });
+                } else {
+                    // Fallback for regular browsers
+                    navigator.clipboard.writeText(referralLink)
+                        .then(() => {
+                            alert('Referral link copied to clipboard!');
+                        })
+                        .catch(err => {
+                            alert('Failed to copy: ' + err);
+                        });
+                }
+            });
+            
+            // Withdrawal amount selection
+            const withdrawOptions = document.querySelectorAll('.withdraw-option');
+            let selectedAmount = 0;
+            
+            withdrawOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    withdrawOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedAmount = parseInt(this.getAttribute('data-amount'));
+                    
+                    // Enable withdraw button if wallet address is provided
+                    if (walletAddressEl.value.trim() !== '') {
+                        requestWithdrawBtn.disabled = false;
+                    }
+                });
+            });
+            
+            // Wallet address validation
+            walletAddressEl.addEventListener('input', function() {
+                if (this.value.trim() !== '' && selectedAmount > 0) {
+                    requestWithdrawBtn.disabled = false;
+                } else {
+                    requestWithdrawBtn.disabled = true;
+                }
+            });
+            
+            // Request withdrawal
+            requestWithdrawBtn.addEventListener('click', function() {
+                if (userData.balance < selectedAmount) {
+                    alert('Insufficient balance for this withdrawal amount.');
+                    return;
+                }
+                
+                if (selectedAmount < 10) {
+                    alert('Minimum withdrawal amount is 10 BTTC.');
+                    return;
+                }
+                
+                if (!walletAddressEl.value.trim()) {
+                    alert('Please enter your BTTC wallet address.');
+                    return;
+                }
+                
+                // Process withdrawal
+                userData.balance -= selectedAmount;
+                
+                // Save user data
+                localStorage.setItem('naruto_user_' + userData.userId, JSON.stringify(userData));
+                updateUI();
+                
+                // Show confirmation
+                if (tg?.showPopup) {
+                    tg.showPopup({
+                        title: "Withdrawal Requested",
+                        message: `Your withdrawal of ${selectedAmount} BTTC has been submitted. It will be processed within 24 hours.`,
+                        buttons: [{ type: "ok" }]
+                    });
+                } else {
+                    alert(`Withdrawal request for ${selectedAmount} BTTC has been submitted. It will be processed within 24 hours.`);
+                }
+                
+                // Reset selection
+                withdrawOptions.forEach(opt => opt.classList.remove('selected'));
+                selectedAmount = 0;
+                walletAddressEl.value = '';
+                requestWithdrawBtn.disabled = true;
+            });
+            
+            // Task buttons
+            const taskButtons = document.querySelectorAll('[data-task]');
+            taskButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const taskType = this.getAttribute('data-task');
+                    
+                    if (userData.tasksRemaining <= 0) {
+                        alert('You have completed all tasks for today. Come back tomorrow!');
+                        return;
+                    }
+                    
+                    switch(taskType) {
+                        case 'watch10':
+                        case 'watch20':
+                            // Redirect to earn section
+                            navItems.forEach(nav => nav.classList.remove('active'));
+                            document.querySelector('[data-target="earnSection"]').classList.add('active');
+                            
+                            sections.forEach(section => {
+                                section.classList.remove('active');
+                                if (section.id === 'earnSection') {
+                                    section.classList.add('active');
+                                }
+                            });
+                            break;
+                            
+                        case 'refer':
+                            // Copy referral link
+                            const botUsername = tg?.initDataUnsafe?.user?.username ? 
+                                `@${tg.initDataUnsafe.user.username}` : 'Naruto_Ads_Earn_V2_Bot';
+                            const referralLink = `https://t.me/${botUsername}?start=ref${userData.userId}`;
+                            
+                            if (tg?.showPopup) {
+                                tg.showPopup({
+                                    title: "Refer a Friend",
+                                    message: `Share your referral link: ${referralLink}`,
+                                    buttons: [{ type: "ok" }]
+                                });
+                            } else {
+                                navigator.clipboard.writeText(referralLink)
+                                    .then(() => {
+                                        alert('Referral link copied to clipboard! Share it with your friends.');
+                                    })
+                                    .catch(err => {
+                                        alert('Failed to copy: ' + err);
+                                    });
+                            }
+                            break;
+                    }
+                });
+            });
+            
+            // Admin toggle
+            adminToggle.addEventListener('click', function() {
+                adminLogin.classList.remove('hidden');
+                mainApp.classList.add('hidden');
+            });
+            
+            // Admin login
+            loginBtn.addEventListener('click', function() {
+                const password = document.getElementById('adminPassword').value;
+                if (password === ADMIN_PASSWORD) {
+                    adminLogin.classList.add('hidden');
+                    mainApp.classList.remove('hidden');
+                    adminPanel.classList.remove('hidden');
+                    loadAdminData();
+                } else {
+                    alert("Invalid admin password");
+                }
+            });
+            
+            // Function to simulate ad watching
+            function simulateAdWatch() {
+                startAdBtn.disabled = true;
+                startAdBtn.textContent = 'Ad is playing...';
+                
+                // Simulate ad playback for 5 seconds (for demo)
+                setTimeout(() => {
+                    // Update user data
+                    userData.adsWatched++;
+                    userData.tasksCompleted++;
+                    userData.tasksRemaining--;
+                    
+                    // Award 0.1 BTTC per ad (1 BTTC per 10 ads)
+                    if (userData.adsWatched % 10 === 0) {
+                        userData.balance += 1;
+                    } else {
+                        userData.balance += 0.1;
+                    }
+                    
+                    // Save to localStorage
+                    localStorage.setItem('naruto_user_' + userData.userId, JSON.stringify(userData));
+                    
+                    // Update UI
+                    updateUI();
+                    
+                    startAdBtn.disabled = false;
+                    startAdBtn.textContent = 'Start Watching Ads';
+                    
+                    // Show completion message
+                    if (tg?.showPopup) {
+                        tg.showPopup({
+                            title: "Ad Completed",
+                            message: "You earned 0.1 BTTC!",
+                            buttons: [{ type: "ok" }]
+                        });
+                    } else {
+                        alert('Ad completed! You earned 0.1 BTTC.');
+                    }
+                }, 5000); // 5 seconds for demo (real app would be 30-60 seconds)
+            }
+            
+            // Function to update UI with current data
+            function updateUI() {
+                totalTasksEl.textContent = '50';
+                completedTasksEl.textContent = userData.tasksCompleted;
+                remainingTasksEl.textContent = userData.tasksRemaining;
+                userBalanceEl.textContent = `BTTC ${userData.balance.toFixed(2)}`;
+                withdrawBalanceEl.textContent = `BTTC ${userData.balance.toFixed(2)}`;
+                adsWatchedEl.textContent = userData.adsWatched;
+                adsToNextCoinEl.textContent = 10 - (userData.adsWatched % 10);
+                
+                // Disable buttons if no tasks remaining
+                if (userData.tasksRemaining <= 0) {
+                    watchAdBtn.disabled = true;
+                    startAdBtn.disabled = true;
+                    watchAdBtn.textContent = 'Tasks Completed Today';
+                    startAdBtn.textContent = 'Tasks Completed Today';
+                }
+            }
+            
+            // Function to load admin data
+            function loadAdminData() {
+                // Load users from localStorage
+                let totalUsers = 0;
+                let totalEarnings = 0;
+                let adsToday = 0;
+                let totalWithdrawals = 0;
+                let activities = [];
+                let users = [];
+                
+                // Loop through all keys in localStorage
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key.startsWith('naruto_user_')) {
+                        totalUsers++;
+                        const userData = JSON.parse(localStorage.getItem(key));
+                        totalEarnings += userData.balance || 0;
+                        adsToday += userData.adsWatched || 0;
+                        
+                        users.push({
+                            id: key.replace('naruto_user_', ''),
+                            balance: userData.balance || 0,
+                            adsWatched: userData.adsWatched || 0,
+                            tasksCompleted: userData.tasksCompleted || 0
+                        });
+                        
+                        // Add to activities
+                        if (userData.adsWatched > 0) {
+                            activities.push({
+                                user: key.replace('naruto_user_', ''),
+                                action: 'Watched ads',
+                                count: userData.adsWatched,
+                                date: new Date().toLocaleDateString()
+                            });
+                        }
+                    }
+                }
+                
+                // Update stats
+                document.getElementById('totalUsers').textContent = totalUsers;
+                document.getElementById('totalEarnings').textContent = totalEarnings.toFixed(2) + ' BTTC';
+                document.getElementById('adsToday').textContent = adsToday;
+                document.getElementById('totalWithdrawals').textContent = totalWithdrawals;
+                
+                // Update activity list
+                const activityList = document.getElementById('activityList');
+                activityList.innerHTML = '';
+                
+                activities.slice(0, 10).forEach(activity => {
+                    activityList.innerHTML += `
+                        <div class="activity-item">
+                            <div>User ${activity.user} ${activity.action}</div>
+                            <div>${activity.count}x</div>
+                        </div>
+                    `;
+                });
+                
+                // Update user list
+                const userList = document.getElementById('userList');
+                userList.innerHTML = '';
+                
+                users.slice(0, 10).forEach(user => {
+                    userList.innerHTML += `
+                        <div class="user-item">
+                            <div>User ${user.id}</div>
+                            <div>${user.balance.toFixed(2)} BTTC</div>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Initialize Monetag ads
+            console.log('Monetag ads SDK loaded');
+        });
+    </script>
+</body>
+</html>
